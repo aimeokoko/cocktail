@@ -9,6 +9,9 @@
 
 library(shiny)
 
+final_cock <- read.csv("https://github.com/aimeokoko/cocktail/blob/main/cocktails.csv")
+d <- read.csv("https://github.com/aimeokoko/cocktail/blob/main/words.csv")
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
