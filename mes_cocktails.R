@@ -18,7 +18,7 @@ library("SnowballC")
 library("wordcloud")
 library("RColorBrewer")
 
-final_cock <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/cocktails.csv")
+# final_cock <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/cocktails.csv")
 d <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/words.csv")
 
 
@@ -42,6 +42,10 @@ ui <- fluidPage(
         ),
         # Show a plot of the generated distribution
         mainPanel(
+            
+            h4("Have a good drink"),
+            uiOutput("img"),
+            
             h3("Ingrédients"),
             htmlOutput("ingre"),
            
@@ -49,10 +53,9 @@ ui <- fluidPage(
            htmlOutput("rec"),
            
            h3("Nuage de mots"),
-           plotOutput("word"),
+           plotOutput("word")
            
-           h4("Have a good drink"),
-           uiOutput("img")
+           
         )
     )
 )
@@ -89,8 +92,12 @@ server <- function(session, input, output) {
           colors=brewer.pal(8, "Dark2"))
         }, width = 600, height = 400)
     
+    
     output$img <- renderUI({
-        tags$img(src = "https://assets.afcdn.com/recipe/20180903/82116_w512h384c1cx3324cy2216.jpg")
+        link <- final_cock %>% 
+            filter(Cocktail == input$cock) %>% 
+            select(Images) %>% slice(1) %>% as.character()
+        tags$img(src = link)
     })
     
 }
