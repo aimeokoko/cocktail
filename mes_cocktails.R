@@ -49,7 +49,10 @@ ui <- fluidPage(
            htmlOutput("rec"),
            
            h3("Nuage de mots"),
-           plotOutput("word")
+           plotOutput("word"),
+           
+           h4("Have a good drink"),
+           uiOutput("img")
         )
     )
 )
@@ -86,7 +89,13 @@ server <- function(session, input, output) {
           colors=brewer.pal(8, "Dark2"))
         }, width = 600, height = 400)
     
+    output$img <- renderUI({
+        tags$img(src = "https://assets.afcdn.com/recipe/20180903/82116_w512h384c1cx3324cy2216.jpg")
+    })
+    
 }
+
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)

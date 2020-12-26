@@ -7,6 +7,8 @@ library(dplyr)
 library(stringr)
 library(purrr)
 
+
+
 #Noms des catégories
 noms_cate <- read_html("https://www.1001cocktails.com/") %>%
   html_nodes("a") %>% 
@@ -56,6 +58,20 @@ prep <- map(my_cocktails$lien, function(x) read_html(x) %>%
                html_text()) 
 prep <- setNames(prep, my_cocktails$names)
 
+## liens_images
+
+liens_img <- map(my_cocktails$lien, function(x) read_html(x) %>%
+                         html_nodes("img") %>% 
+                         html_attr("data-srcset"))
+get_links <- liens_img %>% map(magrittr::extract2, 11)
+
+get_links <- setNames(get_links, my_cocktails$names) %>% 
+  as.data.frame() %>% t() %>% as.data.frame()
+
+get_links$names <- rownames(get_links)
+
+get_links$V1 <- str_extract(get_links$V1, "https.+jpg")
+
 
 #df avec noms, qté, ingrédients et mode de préparation
 full_cock <- data.frame()
@@ -63,7 +79,8 @@ for (i in seq_along(ingre)){
   full <- data.frame(names = my_cocktails$names[i], 
                      qty = qte[[i]],
                      ingre = ingre[[i]],
-                     prep = paste(prep[[i]], collapse = " ")
+                     prep = paste(prep[[i]], collapse = " "),
+                     Images = get_links$V1[i]
                      )
   full_cock <- rbind(full_cock, full)
   rm(full)}
@@ -73,17 +90,18 @@ my_cocktails_un <- my_cocktails %>% filter(!duplicated(my_cocktails$names))
 
 #Ajout de la première base
 final_cock <- left_join(full_cock, my_cocktails_un) %>% 
-  select(5,1,2,3,4,-6) %>% rename(Groupe = nom, 
+  select(6,1,2,3,4,5,-7) %>% rename(Groupe = nom, 
                         Cocktail = names, 
                         Ingédients = ingre,
                         Quantité = qty,
                         Recette = prep) %>% 
-  tidyr::unite("Ingrédients", 3:4, sep = " ")
+  tidyr::unite("Ingrédients", 3,4, sep = " ")
 
 rm(list = c("full_cock", "i", "ingre", 
      "liens_cate", "liens_tout_cate", "my_cock", "my_cocktails", "my_cocktails_un", 
      "noms_cate", "prep", "qte"))
 
+write.csv(final_cock, file = "cocktails.csv")
 
 
 #Text mining Sat Dec 26 22:00:52 2020----------
