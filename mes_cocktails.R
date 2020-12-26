@@ -8,6 +8,16 @@
 #
 
 library(shiny)
+library(rvest)
+library(dplyr)
+library(stringr)
+library(purrr)
+
+library("tm")
+library("SnowballC")
+library("wordcloud")
+library("RColorBrewer")
+
 final_cock <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/cocktails.csv")
 d <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/words.csv")
 
@@ -28,7 +38,7 @@ ui <- fluidPage(
             
             selectInput("cock", 
                         "Cocktail", 
-                        choices = "unique(final_cock$Cocktail)x", selected = "mojito")
+                        choices = "")
         ),
         # Show a plot of the generated distribution
         mainPanel(
