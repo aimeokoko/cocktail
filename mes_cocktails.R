@@ -18,7 +18,7 @@ library("SnowballC")
 library("wordcloud")
 library("RColorBrewer")
 
-final_cock <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/cocktails.csv")
+# final_cock <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/cocktails.csv")
 d <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/words.csv")
 
 
@@ -44,16 +44,16 @@ ui <- fluidPage(
         mainPanel(
             
             h4("Have a good drink"),
-            uiOutput("img"),
+            uiOutput("img"), 
             
             h3("Ingrédients"),
             htmlOutput("ingre"),
            
-           h3("Recette"),
-           htmlOutput("rec"),
+            h3("Recette"),
+            htmlOutput("rec"),
            
-           h3("Nuage de mots"),
-           plotOutput("word")
+            h3("Nuage de mots"),
+            plotOutput("word")
            
            
         )
@@ -101,8 +101,6 @@ server <- function(session, input, output) {
     })
     
 }
-
-
 
 # Run the application 
 shinyApp(ui = ui, server = server)
