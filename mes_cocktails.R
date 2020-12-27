@@ -18,7 +18,7 @@ library("SnowballC")
 library("wordcloud")
 library("RColorBrewer")
 
-# final_cock <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/cocktails.csv")
+final_cock <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/cocktails2.csv")
 d <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/words.csv")
 
 
