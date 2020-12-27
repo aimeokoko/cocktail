@@ -154,6 +154,7 @@ docs <- tm_map(docs, content_rep, "canne", "sucre")
 docs <- tm_map(docs, content_rep, "dananas", "ananas")
 docs <- tm_map(docs, content_rep, "dorange", "orange")
 docs <- tm_map(docs, content_rep, "oranges", "orange")
+docs <- tm_map(docs, content_rep, "deau", "eau")
 
 
 
@@ -163,7 +164,12 @@ docs <- tm_map(docs, removeWords, c("cl", "de", "g", "/", "jus",
                                     "verts", "vert", "verte", "pincée", "sec",
                                     "blanc", "fraîche",
                                     "trait", "sirop",
-                                    "citron", "triple")) 
+                                    "citron", "triple", 
+                                    "grand", "liquide",
+                                    "vertes", "gouttes",
+                                    "cuillères", "zestes", 
+                                    "morceaux", "pincées", "essence",
+                                    "trait", "concentré")) 
 
 dtm <- TermDocumentMatrix(docs)
 m <- as.matrix(dtm)
