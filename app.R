@@ -7,17 +7,16 @@
 #    http://shiny.rstudio.com/
 #
 
-install.packages("rvest")
-install.packages("dplyr")
-install.packages("stringr")
-install.packages("purrr")
-install.packages("wordcloud")
-install.packages("SnowballC")
-install.packages("RColorBrewer")
-install.packages("tm")
+
+# install.packages("dplyr")
+# install.packages("stringr")
+# install.packages("purrr")
+# install.packages("wordcloud")
+# install.packages("SnowballC")
+# install.packages("RColorBrewer")
+# install.packages("tm")
 
 library(shiny)
-library(rvest)
 library(dplyr)
 library(stringr)
 library(purrr)
@@ -53,14 +52,14 @@ ui <- fluidPage(
         mainPanel(
             
             h4("Have a good drink"),
-            uiOutput("img"), 
+            uiOutput("img"),
             
             h3("Ingrédients"),
-            htmlOutput("ingre"),
+            textOutput("ingre"),
            
             h3("Recette"),
             htmlOutput("rec"),
-           
+
             h3("Nuage de mots"),
             plotOutput("word")
            
@@ -80,16 +79,16 @@ server <- function(session, input, output) {
                           choices = choi)
     })
 
-    output$ingre <- renderUI({
+    output$ingre <- renderText({
         # generate bins based on input$bins from ui.R
-        ingred <- final_cock %>% filter(Cocktail == input$cock) %>% 
+        ingred <- final_cock %>% filter(Cocktail == input$cock) %>%
             select(Ingrédients) %>% reduce(paste)
             HTML(paste(ingred, collapse = "<br/>"))
     })
     output$rec <- renderUI({
-        recet <- final_cock %>% filter(Cocktail == input$cock) %>% 
-            select(Recette) %>% slice(1) %>% as.character() %>% 
-            str_remove_all("\t") %>% str_sub(2,-1) %>% 
+        recet <- final_cock %>% filter(Cocktail == input$cock) %>%
+            select(Recette) %>% slice(1) %>% as.character() %>%
+            str_remove_all("\t") %>% str_sub(2,-1) %>%
             str_replace_all("\n", "<br/> <br/>")
         HTML(recet)
     })
@@ -97,14 +96,14 @@ server <- function(session, input, output) {
     output$word <- renderPlot({
         set.seed(1234)
         wordcloud(words = d$word, freq = d$freq, min.freq = 1,
-          max.words=209, random.order=FALSE, rot.per=0.35, 
+          max.words=209, random.order=FALSE, rot.per=0.35,
           colors=brewer.pal(8, "Dark2"))
         }, width = 600, height = 400)
     
     
     output$img <- renderUI({
-        link <- final_cock %>% 
-            filter(Cocktail == input$cock) %>% 
+        link <- final_cock %>%
+            filter(Cocktail == input$cock) %>%
             select(Images) %>% slice(1) %>% as.character()
         tags$img(src = link)
     })
