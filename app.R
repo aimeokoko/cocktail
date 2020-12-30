@@ -55,7 +55,7 @@ ui <- fluidPage(
             uiOutput("img"),
             
             h3("Ingrédients"),
-            textOutput("ingre"),
+            htmlOutput("ingre"),
            
             h3("Recette"),
             htmlOutput("rec"),
@@ -79,7 +79,7 @@ server <- function(session, input, output) {
                           choices = choi)
     })
 
-    output$ingre <- renderText({
+    output$ingre <- renderUI({
         # generate bins based on input$bins from ui.R
         ingred <- final_cock %>% filter(Cocktail == input$cock) %>%
             select(Ingrédients) %>% reduce(paste)
