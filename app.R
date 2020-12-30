@@ -7,6 +7,15 @@
 #    http://shiny.rstudio.com/
 #
 
+install.packages("rvest")
+install.packages("dplyr")
+install.packages("stringr")
+install.packages("purrr")
+install.packages("wordcloud")
+install.packages("SnowballC")
+install.packages("RColorBrewer")
+install.packages("tm")
+
 library(shiny)
 library(rvest)
 library(dplyr)

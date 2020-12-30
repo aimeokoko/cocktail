@@ -1,0 +1,13 @@
+name: Cocktail
+title: Cocktail
+username:
+account: okaim
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3435035
+bundleId: 4040541
+url: https://okaim.shinyapps.io/Cocktail/
+when: 1609290955.57262
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: new_name
