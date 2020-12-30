@@ -18,8 +18,8 @@ library("SnowballC")
 library("wordcloud")
 library("RColorBrewer")
 
-final_cock <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/cocktails2.csv")
-d <- read.csv("https://raw.githubusercontent.com/aimeokoko/cocktail/main/words.csv")
+final_cock <- read.csv("cocktails2.csv")
+d <- read.csv("words.csv")
 
 
 # Define UI for application that draws a histogram
