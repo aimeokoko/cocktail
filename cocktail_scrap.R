@@ -1,15 +1,14 @@
-##Get the page
 
-stop("calm bro")
+#Library loading Mon Apr 19 12:38:23 2021----------
 
 library(rvest)
 library(dplyr)
 library(stringr)
 library(purrr)
 
+#Webscrap Mon Apr 19 12:38:40 2021----------
 
-
-#Noms des catégories
+#Get categories names
 noms_cate <- read_html("https://www.1001cocktails.com/") %>%
   html_nodes("a") %>% 
   html_attr("href") %>%
@@ -17,7 +16,7 @@ noms_cate <- read_html("https://www.1001cocktails.com/") %>%
   unique() %>% 
   str_sub(50,-6)
 
-#liens des catégories
+# Get catégories links
 liens_cate <- read_html("https://www.1001cocktails.com/") %>%
   html_nodes("a") %>% 
   html_attr("href") %>%
@@ -25,12 +24,11 @@ liens_cate <- read_html("https://www.1001cocktails.com/") %>%
   unique()
 
 
-#Liens à l'intérieur de chaque catégorie
 liens_tout_cate <- map(liens_cate, function(x) read_html(x) %>%
   html_nodes(".recipe-card-link") %>% 
   html_attr("href"))
 
-#Mettre dans data frame
+#To data frame
 my_cocktails <- data.frame()
 for (i in seq_along(liens_cate)){
   my_cock <- data.frame(nom = noms_cate[i], 
@@ -39,26 +37,26 @@ for (i in seq_along(liens_cate)){
 
 my_cocktails$names <- str_sub(my_cocktails$lien, 48, -13 )
 
-#Quantité Ingrédient
+# Ingredient qauntity
 qte <- map(my_cocktails$lien, function(x) read_html(x) %>%
       html_nodes(".recipe-ingredient-qt") %>% 
       html_text())
 qte <- setNames(qte, my_cocktails$names)
 
-#Ingrédient
+#Ingredient
 ingre <- map(my_cocktails$lien, function(x) read_html(x) %>%
                   html_nodes(".ingredient") %>% 
                   html_text())
 ingre <- setNames(ingre, my_cocktails$names)
 
 
-#Préparation
+# Recipes
 prep <- map(my_cocktails$lien, function(x) read_html(x) %>%
                html_nodes(".recipe-preparation__list__item") %>% 
                html_text()) 
 prep <- setNames(prep, my_cocktails$names)
 
-## liens_images
+## pictures links
 
 liens_img <- map(my_cocktails$lien, function(x) read_html(x) %>%
                          html_nodes("img") %>% 
@@ -72,8 +70,7 @@ get_links$names <- rownames(get_links)
 
 get_links$V1 <- str_extract(get_links$V1, "https.+jpg")
 
-
-#df avec noms, qté, ingrédients et mode de préparation
+#Data frame with names, quantity, ingredients and recipes
 full_cock <- data.frame()
 for (i in seq_along(ingre)){
   full <- data.frame(names = my_cocktails$names[i], 
@@ -88,7 +85,7 @@ for (i in seq_along(ingre)){
 
 my_cocktails_un <- my_cocktails %>% filter(!duplicated(my_cocktails$names))
 
-#Ajout de la première base
+#First data frame
 final_cock <- left_join(full_cock, my_cocktails_un) %>% 
   select(6,1,2,3,4,5,-7) %>% rename(Groupe = nom, 
                         Cocktail = names, 
@@ -111,19 +108,20 @@ write.csv(final_cock, file = "cocktails.csv")
 # install.packages("SnowballC") # pour le text stemming
 # install.packages("wordcloud") # générateur de word-cloud 
 # install.packages("RColorBrewer") # Palettes de couleurs
-# Charger
+
+# Load packages
+
 library("tm")
 library("SnowballC")
 library("wordcloud")
 library("RColorBrewer")
 
-# filePath <- "http://www.sthda.com/sthda/RDoc/example-files/martin-luther-king-i-have-a-dream-speech.txt"
 text <- final_cock$Ingrédients
 
-# Charger les données comme un corpus
+# Load text data as corpus
 docs <- Corpus(VectorSource(text))
 
-# Remplacer “/”, “@” et “|” avec un espace
+# Replace “/”, “@” et “|” with a space
 # 
 # toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
 # docs <- tm_map(docs, toSpace, "/")
@@ -131,19 +129,18 @@ docs <- Corpus(VectorSource(text))
 # docs <- tm_map(docs, toSpace, "\\|")
 
 
-# Convertir le texte en minuscule
+# Convert to lower
 docs <- tm_map(docs, content_transformer(tolower))
-# Supprimer les nombres
+# Remove numbers
 docs <- tm_map(docs, removeNumbers)
-# Supprimer les mots vides anglais
+# Remove stopwords in english
 docs <- tm_map(docs, removeWords, stopwords("english"))
-# Supprimer les ponctuations
+# Remove punctuation
 docs <- tm_map(docs, removePunctuation)
-# Supprimer les espaces vides supplémentaires
+# Remove whitespace
 docs <- tm_map(docs, stripWhitespace)
-# Text stemming
-# docs <- tm_map(docs, stemDocument)
-#Transformer citron en citrons
+
+# Transform similar words
 content_rep <- content_transformer(function(x, pattern, replacement) 
   str_replace_all(x, pattern, replacement))
 
@@ -154,30 +151,22 @@ docs <- tm_map(docs, content_rep, "canne", "sucre")
 docs <- tm_map(docs, content_rep, "dananas", "ananas")
 docs <- tm_map(docs, content_rep, "dorange", "orange")
 docs <- tm_map(docs, content_rep, "oranges", "orange")
-docs <- tm_map(docs, content_rep, "deau", "eau")
 
 
-
-#Etape 4: Construire la matrice des mots Sat Dec 26 22:10:50 2020----------
-# Supprimer votre propre liste de mots non désirés
+# Suppress unwanted words
 docs <- tm_map(docs, removeWords, c("cl", "de", "g", "/", "jus",
                                     "verts", "vert", "verte", "pincée", "sec",
                                     "blanc", "fraîche",
                                     "trait", "sirop",
-                                    "citron", "triple", 
-                                    "grand", "liquide",
-                                    "vertes", "gouttes",
-                                    "cuillères", "zestes", 
-                                    "morceaux", "pincées", "essence",
-                                    "trait", "concentré")) 
+                                    "citron", "triple")) 
 
+
+#Word cloud Sat Dec 26 22:11:30 2020----------
 dtm <- TermDocumentMatrix(docs)
 m <- as.matrix(dtm)
 v <- sort(rowSums(m),decreasing=TRUE)
 d <- data.frame(word = names(v),freq=v)
 head(d, 10)
-
-#Etape 5: Générer le nuage de mots Sat Dec 26 22:11:30 2020----------
 
 set.seed(1234)
 wordcloud(words = d$word, freq = d$freq, min.freq = 1,
