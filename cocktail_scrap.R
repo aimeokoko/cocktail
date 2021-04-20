@@ -16,7 +16,7 @@ noms_cate <- read_html("https://www.1001cocktails.com/") %>%
   unique() %>% 
   str_sub(50,-6)
 
-# Get catégories links
+# Get categories links
 liens_cate <- read_html("https://www.1001cocktails.com/") %>%
   html_nodes("a") %>% 
   html_attr("href") %>%
