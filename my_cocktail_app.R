@@ -1,6 +1,6 @@
 packages <- "shiny"
 install.packages(setdiff(packages, rownames(installed.packages())))
-
+library(shiny)
 run <- function(){
   runApp(temp)}
 
