@@ -1,7 +1,8 @@
-ifelse(require(shiny), library(shiny), install.packages(shiny))
+packages <- "shiny"
+install.packages(setdiff(packages, rownames(installed.packages())))
 
 run <- function(){
-runApp("cocktail_shiny.R")}
+  runApp(temp)}
 
 temp <- tempfile(fileext = ".R")
 download.file("https://raw.githubusercontent.com/aimeokoko/cocktail/main/cocktail_app.R", 
